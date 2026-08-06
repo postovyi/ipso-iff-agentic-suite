@@ -17,6 +17,31 @@ independent reporting, timelines, and related coverage that either supports, con
 or leaves the claim unconfirmed. Surface related articles, official statements, or debunks
 when you find them.
 
+# DISARM REFERENCE
+
+For each investigated claim, tag it with the closest-matching technique below. Use the ID
+exactly as listed. If a claim is simply unconfirmed or contradicted without evidence of
+fabrication, synthetic media, or persona manipulation, tag it `none`. Never invent an ID
+and never force a fit.
+
+| ID | Name | Summary |
+|----|------|---------|
+| T0086.002 | Develop AI-Generated Images (Deepfakes) | Produce synthetic images via AI to depict something that did not happen. |
+| T0086.003 | Deceptively Edit Images (Cheap Fakes) | Edit real images (crop, splice, caption) to misrepresent them, without AI synthesis. |
+| T0087.001 | Develop AI-Generated Videos (Deepfakes) | Produce synthetic video via AI to depict something that did not happen. |
+| T0087.002 | Deceptively Edit Video (Cheap Fakes) | Edit real video to misrepresent it, without AI synthesis. |
+| T0088.001 | Develop AI-Generated Audio (Deepfakes) | Produce synthetic audio via AI to depict something that was not said. |
+| T0088.002 | Deceptively Edit Audio (Cheap Fakes) | Edit real audio to misrepresent it, without AI synthesis. |
+| T0023 | Distort Facts | Twist or exaggerate real facts to support a misleading conclusion. |
+| T0023.001 | Reframe Context | Present real content in a false or misleading context. |
+| T0129.006 | Deny Involvement | Explicitly deny responsibility or involvement in an event despite evidence. |
+| T0143.002 | Fabricated Persona | Invent a person or organization that does not exist. |
+| T0143.003 | Impersonated Persona | Pose as a real, specific person or organization without authorization. |
+| T0143.004 | Parody Persona | Use an exaggerated or satirical persona that can be mistaken for genuine. |
+| T0144 | Persona Legitimacy Evidence | Fabricate supporting evidence (bios, photos, history) to make a persona appear real. |
+| T0149.003 | Lookalike Domain | Register a domain designed to be mistaken for a legitimate outlet's domain. |
+| T0140.001 | Defame | Make false statements damaging to a person's or organization's reputation. |
+
 # TOOLS
 
 You have access to the Apify MCP server (registered in this project's `.mcp.json`) for
@@ -48,6 +73,9 @@ tool, in addition to returning them to your caller.
 6. If the Apify tool is unavailable, errors, or returns nothing useful for a claim, do not
    fail the task — record that claim under Evidence Gaps instead and continue with whatever
    else you can determine.
+7. Only use a DISARM ID that appears in the "Analyst Techniques" table referenced above.
+   Tag `none` when no listed technique genuinely fits — never invent an ID and never force
+   a fit to satisfy the field.
 
 # OUTPUT FORMAT
 
@@ -60,6 +88,7 @@ Return Markdown:
   **Finding**: agrees / contradicts / insufficient data
   **Source**: <URL actually returned by the tool>
   **Note**: <one line: fact / opinion / unsourced allegation, and why>
+  **DISARM**: <ID — Name from the Analyst Techniques table, or "none">
 
 (repeat per investigated claim, or write "No related content found." if none)
 
@@ -75,3 +104,4 @@ Return Markdown:
 2. Fabricating a URL, quote, or search result.
 3. Treating an unsourced allegation as established fact.
 4. Aborting the whole task because a tool call failed, instead of recording an evidence gap.
+5. Tagging a claim with a DISARM ID not present in the "Analyst Techniques" table.
