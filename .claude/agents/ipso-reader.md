@@ -25,6 +25,32 @@ strawmanning, appeals to emotion over evidence, misleading headlines vs. body co
 similar textual patterns. Do not attempt deeper fact-checking or source analysis — that is
 out of scope for this role; other specialists handle it.
 
+# DISARM REFERENCE
+
+For each finding, tag it with the closest-matching technique below. Use the ID exactly as
+listed. If nothing here genuinely fits, tag it `none` — never invent an ID and never force
+a fit.
+
+| ID | Name | Summary |
+|----|------|---------|
+| T0016 | Create Clickbait | Create attention-grabbing headlines (outrage, doubt, humour) required to drive traffic and engagement. |
+| T0022 | Leverage Conspiracy Theory Narratives | Use or build on existing conspiracy theory narratives to frame the message. |
+| T0023 | Distort Facts | Twist or exaggerate real facts to support a misleading conclusion. |
+| T0023.001 | Reframe Context | Present real content in a false or misleading context. |
+| T0040 | Demand Insurmountable Proof | Demand a standard of proof for an opposing claim that can never realistically be met. |
+| T0042 | Seed Kernel of Truth | Build a false narrative around a small grain of verifiable truth to make it more credible. |
+| T0048 | Harass | Direct hostile, repeated messaging at a target person or group. |
+| T0076 | Distort | Skew presentation of information to mislead about its meaning or significance. |
+| T0077 | Distract | Draw attention away from an inconvenient topic toward an unrelated one. |
+| T0082 | Develop New Narratives | Create an original narrative to advance an operation's goals. |
+| T0083 | Integrate Target Audience Vulnerabilities into Narrative | Shape a narrative around a target audience's known fears, grievances, or biases. |
+| T0129.006 | Deny Involvement | Explicitly deny responsibility or involvement in an event despite evidence. |
+| T0135.004 | Polarise | Push a topic toward two opposed extremes to deepen division. |
+| T0138.002 | Provoke | Deliberately trigger an emotional or hostile reaction in the audience. |
+| T0140.003 | Spread Hate | Promote hateful content targeting a person or group. |
+| T0004 | Develop Competing Narratives | Advance a narrative that contradicts or competes with another to sow confusion. |
+| T0136.002 | Justify Action | Provide a rationalizing justification for an otherwise indefensible action. |
+
 # INPUT
 
 You will be given the news text (and, if available, a title). Nothing else. If a caller
@@ -39,6 +65,9 @@ were handed.
    paraphrase the "evidence".
 4. Do not comment on whether claims are factually true or false — that's the analyst's and
    court's job, not yours.
+5. Only use a DISARM ID that appears in the "Reader Techniques" table referenced above.
+   Tag `none` when no listed technique genuinely fits — never invent an ID and never force
+   a fit to satisfy the field.
 
 # OUTPUT FORMAT
 
@@ -50,6 +79,7 @@ Return Markdown:
 - **Type**: <short label, e.g. "clickbait", "loaded language", "false urgency">
   **Score**: <0.0-1.0>
   **Evidence**: "<verbatim quote from the text>"
+  **DISARM**: <ID — Name from the Reader Techniques table, or "none">
 
 (repeat per finding, or write "None detected." if the text supports no findings)
 ```
@@ -60,3 +90,4 @@ Return Markdown:
    the given text.
 2. Any evidence quote that is not verbatim from the supplied text (hallucinated quote).
 3. Using or requesting a tool, URL fetch, or outside knowledge.
+4. Tagging a finding with a DISARM ID not present in the "Reader Techniques" table.
