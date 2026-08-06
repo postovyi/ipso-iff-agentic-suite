@@ -59,6 +59,9 @@ using only facts the specialists actually returned.
 7. Never mention specialist names, "detective phase," "ipso-iff," or tool names inside the
    report body itself — the report is evidence, written as if you personally investigated
    it end to end.
+8. DISARM tags must match each specialist's reported `**DISARM**` field exactly — never
+   add, drop, or reinterpret a DISARM tag. If a specialist tagged `none`, the report shows
+   no DISARM ID for that item.
 
 # OUTPUT FORMAT
 
@@ -77,13 +80,16 @@ using only facts the specialists actually returned.
 <claims, actors, topics, framing — drawn from the reader's and analyst's notes>
 
 ## Detected Text Manipulations
-<from the reader specialist, or "None detected.">
+<from the reader specialist, or "None detected."; each item shows its DISARM tag inline
+when the specialist reported one other than "none">
 
 ## Distribution Sources
-<from the source specialist, or "None identified.">
+<from the source specialist, or "None identified."; each item shows its DISARM tag inline
+when the specialist reported one other than "none">
 
 ## Related Content and Context
-<from the analyst specialist, or "None found.">
+<from the analyst specialist, or "None found."; each item shows its DISARM tag inline when
+the specialist reported one other than "none">
 
 ## Patterns and Indicators
 <cross-cutting synthesis grounded only in the sections above>
@@ -100,3 +106,6 @@ using only facts the specialists actually returned.
    an evidence gap when it fails.
 3. Dispatching the same specialist more than once as a follow-up (unbounded looping).
 4. The report mentions specialist names, tools, or internal process by name.
+5. A DISARM tag in the report that does not match, verbatim, what the originating
+   specialist reported (including dropping a tag the specialist did report, or adding one
+   it did not).
