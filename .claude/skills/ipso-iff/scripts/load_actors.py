@@ -52,7 +52,13 @@ ACTORS = {
 }
 
 
-ENABLED_ACTORS = {name: cfg for name, cfg in ACTORS.items() if cfg["enabled"]}
+def _usable(name, cfg):
+    if name == "apify":
+        return cfg["enabled"]
+    return cfg["enabled"] and bool(cfg.get("actor"))
+
+
+ENABLED_ACTORS = {name: cfg for name, cfg in ACTORS.items() if _usable(name, cfg)}
 
 if __name__ == "__main__":
     import json

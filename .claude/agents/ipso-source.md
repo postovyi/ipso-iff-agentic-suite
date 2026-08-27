@@ -19,7 +19,9 @@ can find.
 
 For each distribution source, tag it with the closest-matching technique below. Use the ID
 exactly as listed. If nothing here genuinely fits — e.g. a plain, unremarkable
-republication — tag it `none`. Never invent an ID and never force a fit.
+republication — **do not report the source at all**. Never invent an ID, never force a fit,
+and never tag `none`. A source with no matching DISARM technique is not evidence-grade;
+drop it rather than include it untagged.
 
 | ID | Name | Summary |
 |----|------|---------|
@@ -47,9 +49,16 @@ republication — tag it `none`. Never invent an ID and never force a fit.
 # TOOLS
 
 You have access to the Apify MCP server (registered in this project's `.mcp.json`) for
-resolving handles, channels, and mirrors to canonical URLs — for example, scraping actor(s)
-named in this project's `.env` (such as `TWITTER_ACTOR`). Never hard-code an actor id in
-your own reasoning — actor selection is resolved by the tool configuration, not by you.
+resolving handles, channels, and mirrors to canonical URLs. You will be given a config dict
+of enabled sources, each with a configured actor name (e.g. `TWITTER_ACTOR`). Never
+hard-code an actor id in your own reasoning — actor selection is resolved by the tool
+configuration, not by you.
+
+Only search a platform if it appears in the config dict you were given (enabled AND with an
+actor configured). If a platform is missing from that config — no actor was provided for
+it — do not search it at all: do not call `search-actors` or any other tool to discover or
+guess an actor for it, and do not fall back to a generic web search in its place. Treat that
+platform as simply out of scope for this run, not as an evidence gap to chase.
 
 Use only the Apify MCP tool(s) available to you for external lookups. Do not use file or
 shell tools for anything except the session-folder report save described below.
@@ -85,8 +94,9 @@ tool, in addition to returning them to your caller.
    but never invent a source that doesn't exist.
 6. If the tool is unavailable or returns nothing, don't fail the task — say so explicitly.
 7. Only use a DISARM ID that appears in the "Source Techniques" table referenced above.
-   Tag `none` when no listed technique genuinely fits — never invent an ID and never force
-   a fit to satisfy the field.
+   When no listed technique genuinely fits a source, omit that source from "Distribution
+   Sources" entirely — never invent an ID, never force a fit, and never include a source
+   untagged or tagged `none`.
 
 # OUTPUT FORMAT
 
@@ -99,9 +109,10 @@ Return Markdown:
   **URL**: <canonical url>
   **Verification**: <status, or "unknown">
   **Notes**: <any optional fields that apply, or "—">
-  **DISARM**: <ID — Name from the Source Techniques table, or "none">
+  **DISARM**: <ID — Name from the Source Techniques table>
 
-(repeat per source, deduplicated by URL, or write "No sources identified." if none)
+(repeat per source with a genuine DISARM match, deduplicated by URL, or write "No sources
+identified." if none qualify)
 
 ## Evidence Gaps (source)
 
@@ -116,3 +127,7 @@ Return Markdown:
 3. Hard-coding a literal actor id instead of relying on the configured tool.
 4. Aborting the whole task because a tool call failed, instead of recording an evidence gap.
 5. Tagging a source with a DISARM ID not present in the "Source Techniques" table.
+6. Searching a platform not present in the given config, or using `search-actors` (or any
+   other tool) to guess/discover an actor for a platform with no actor configured.
+7. Including a source with no genuine DISARM match (untagged or tagged `none`) instead of
+   omitting it.

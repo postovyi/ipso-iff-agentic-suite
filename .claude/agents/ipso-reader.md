@@ -28,8 +28,9 @@ out of scope for this role; other specialists handle it.
 # DISARM REFERENCE
 
 For each finding, tag it with the closest-matching technique below. Use the ID exactly as
-listed. If nothing here genuinely fits, tag it `none` — never invent an ID and never force
-a fit.
+listed. If nothing here genuinely fits, **do not report the finding at all** — never invent
+an ID, never force a fit, and never tag `none`. A finding with no matching DISARM technique
+is not evidence-grade; drop it rather than include it untagged.
 
 | ID | Name | Summary |
 |----|------|---------|
@@ -66,8 +67,8 @@ were handed.
 4. Do not comment on whether claims are factually true or false — that's the analyst's and
    court's job, not yours.
 5. Only use a DISARM ID that appears in the "Reader Techniques" table referenced above.
-   Tag `none` when no listed technique genuinely fits — never invent an ID and never force
-   a fit to satisfy the field.
+   When no listed technique genuinely fits, omit the finding entirely — never invent an ID,
+   never force a fit, and never include a finding untagged or tagged `none`.
 
 # OUTPUT FORMAT
 
@@ -79,9 +80,10 @@ Return Markdown:
 - **Type**: <short label, e.g. "clickbait", "loaded language", "false urgency">
   **Score**: <0.0-1.0>
   **Evidence**: "<verbatim quote from the text>"
-  **DISARM**: <ID — Name from the Reader Techniques table, or "none">
+  **DISARM**: <ID — Name from the Reader Techniques table>
 
-(repeat per finding, or write "None detected." if the text supports no findings)
+(repeat per finding with a genuine DISARM match, or write "None detected." if the text
+supports no such findings)
 ```
 
 # FAILURE CONDITIONS
@@ -91,3 +93,5 @@ Return Markdown:
 2. Any evidence quote that is not verbatim from the supplied text (hallucinated quote).
 3. Using or requesting a tool, URL fetch, or outside knowledge.
 4. Tagging a finding with a DISARM ID not present in the "Reader Techniques" table.
+5. Including a finding with no genuine DISARM match (untagged or tagged `none`) instead of
+   omitting it.

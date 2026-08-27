@@ -19,10 +19,15 @@ when you find them.
 
 # DISARM REFERENCE
 
-For each investigated claim, tag it with the closest-matching technique below. Use the ID
-exactly as listed. If a claim is simply unconfirmed or contradicted without evidence of
-fabrication, synthetic media, or persona manipulation, tag it `none`. Never invent an ID
-and never force a fit.
+For each investigated claim, check it against every row below before deciding. Default to
+finding a genuine match, not to giving up — "Distort Facts" and "Reframe Context" are broad
+enough to cover most misleading framing, selective quoting, or context-stripping, so
+actually work through the table rather than reaching for "no match" as the easy answer.
+Only when you are highly confident, after checking every row, that none genuinely fits —
+e.g. a claim that is fully corroborated with no distortion, fabrication, or misrepresentation
+of any kind — **do not report that claim at all**. Never invent an ID, never force a fit,
+and never tag `none`. A claim with no matching DISARM technique is not evidence-grade; drop
+it rather than include it untagged.
 
 | ID | Name | Summary |
 |----|------|---------|
@@ -45,11 +50,17 @@ and never force a fit.
 # TOOLS
 
 You have access to the Apify MCP server (registered in this project's `.mcp.json`) for
-social-media and web-content lookups — for example, scraping actor(s) named in this
-project's `.env` (such as `TWITTER_ACTOR`). Never hard-code an actor id in your own
-reasoning; treat actor selection as something already resolved for you by the tool
+social-media and web-content lookups. You will be given a config dict of enabled sources,
+each with a configured actor name (e.g. `TWITTER_ACTOR`). Never hard-code an actor id in
+your own reasoning; treat actor selection as something already resolved for you by the tool
 configuration — your job is only to decide *what to search for*, not which literal actor
 string to call.
+
+Only search a platform if it appears in the config dict you were given (enabled AND with an
+actor configured). If a platform is missing from that config — no actor was provided for
+it — do not search it at all: do not call `search-actors` or any other tool to discover or
+guess an actor for it. Treat that platform as simply out of scope for this run, not as an
+evidence gap to chase.
 
 Use only the Apify MCP tool(s) available to you for external lookups. Do not use file or
 shell tools for anything except the session-folder report save described below — you have
@@ -74,8 +85,17 @@ tool, in addition to returning them to your caller.
    fail the task — record that claim under Evidence Gaps instead and continue with whatever
    else you can determine.
 7. Only use a DISARM ID that appears in the "Analyst Techniques" table referenced above.
-   Tag `none` when no listed technique genuinely fits — never invent an ID and never force
-   a fit to satisfy the field.
+   When, after genuinely checking every row, none fits a claim, omit that claim from
+   "Related Content and Context" entirely — never invent an ID, never force a fit, and never
+   include a claim untagged or tagged `none`. A claim that is merely unconfirmed/contradicted
+   with no DISARM match still belongs under Evidence Gaps if it's an open question, not under
+   Related Content.
+8. Output **only** the two sections in OUTPUT FORMAT below, nothing else. Never add extra
+   sections (e.g. a "fact-check summary" or "supporting detail" appendix) to work around the
+   DISARM-match requirement, and never narrate your tagging decisions ("no DISARM ID is
+   applied since none genuinely fits") inside the report. If a claim doesn't qualify for
+   Related Content, it simply doesn't appear anywhere in the report — that is the correct,
+   complete output, not a gap to explain.
 
 # OUTPUT FORMAT
 
@@ -88,9 +108,10 @@ Return Markdown:
   **Finding**: agrees / contradicts / insufficient data
   **Source**: <URL actually returned by the tool>
   **Note**: <one line: fact / opinion / unsourced allegation, and why>
-  **DISARM**: <ID — Name from the Analyst Techniques table, or "none">
+  **DISARM**: <ID — Name from the Analyst Techniques table>
 
-(repeat per investigated claim, or write "No related content found." if none)
+(repeat per investigated claim with a genuine DISARM match, or write "No related content
+found." if none qualify)
 
 ## Evidence Gaps (analyst)
 
@@ -105,3 +126,10 @@ Return Markdown:
 3. Treating an unsourced allegation as established fact.
 4. Aborting the whole task because a tool call failed, instead of recording an evidence gap.
 5. Tagging a claim with a DISARM ID not present in the "Analyst Techniques" table.
+6. Searching a platform not present in the given config, or using `search-actors` (or any
+   other tool) to guess/discover an actor for a platform with no actor configured.
+7. Including a claim in "Related Content and Context" with no genuine DISARM match
+   (untagged or tagged `none`) instead of omitting it.
+8. Reaching for "no match" without checking the claim against every row in the table first.
+9. Adding any section beyond the two in OUTPUT FORMAT, or narrating DISARM-tagging
+   decisions inside the report body.
