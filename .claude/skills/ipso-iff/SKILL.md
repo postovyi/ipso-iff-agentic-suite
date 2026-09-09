@@ -1,6 +1,6 @@
 ---
 name: ipso-iff
-description: Investigate a piece of news for information manipulation. Runs a three-phase pipeline — detective (evidence gathering) → court (attorney/prosecutor) → judge (final verdict) — and returns a Detective Report plus a decisive, non-technical verdict. Use when the user asks to investigate, fact-check, or check a news item/article/post for manipulation or disinformation.
+description: Investigate a piece of news for information manipulation. Runs a pipeline — detective (evidence gathering) → court (attorney/prosecutor) → judge (final verdict) → annotator (Master Dataset JSON) — and returns a Detective Report plus a decisive, non-technical verdict. Use when the user asks to investigate, fact-check, or check a news item/article/post for manipulation or disinformation.
 argument-hint: "News text and/or URL to investigate (date optional)"
 user-invocable: true
 ---
@@ -16,9 +16,10 @@ You **MUST** consider the user input before proceeding.
 ## What this skill does
 
 Orchestrates a full information-manipulation investigation of a single piece of news
-supplied above, in exactly three phases, in order. No database or persistence is involved
-anywhere in this flow — everything is scoped to this run, and every produced report is
-Markdown.
+supplied above, in order, ending with a machine-readable Master Dataset JSON row per
+excerpt. No database is involved anywhere in this flow — everything is scoped to this run,
+written only to the session folder (`artifacts/<session_id>/`) as Markdown reports plus one
+`dataset.json`.
 
 ## Step 1 — Normalize the input
 
@@ -33,6 +34,8 @@ From `$ARGUMENTS`, extract:
 - `title` — if evident, otherwise omit.
 - `url` — if provided, otherwise omit. Its absence never blocks the investigation.
 - `date` — if provided, otherwise omit. Its absence never blocks the investigation.
+- `source` — the channel/outlet name, if provided or self-evident (e.g. from the URL's
+  domain), otherwise omit. Its absence never blocks the investigation.
 
 ## Step 1.5 — Load actor configs
 
@@ -52,9 +55,10 @@ Create the folder `artifacts/<session_id>/` (relative to the project root). This
 
 Pass the session folder path (e.g. `artifacts/<session_id>/`) to **every** agent dispatched
 from this point on (`ipso-detective-head` and, transitively via it, `ipso-reader`,
-`ipso-analyst`, `ipso-source`; then `ipso-attorney`, `ipso-prosecutor`, `ipso-judge`). Every
-one of these agents **must** write its own report to that folder as a file (see each agent's
-own spec for its exact filename) in addition to returning the report inline to its caller.
+`ipso-analyst`, `ipso-source`; then `ipso-attorney`, `ipso-prosecutor`, `ipso-judge`; then
+`ipso-annotator`). Every one of these agents **must** write its own report to that folder as
+a file (see each agent's own spec for its exact filename) in addition to returning the
+report inline to its caller.
 
 ## Step 2 — Detective phase
 
@@ -84,7 +88,18 @@ Dispatch `ipso-judge` with: the Piece of News, the Detective Report, both Court 
 Step 1.6. Wait for the Final Verdict Report (exactly one of "Manipulation present." /
 "Manipulation not established." plus a standalone conclusion).
 
-## Step 5 — Respond to the user
+## Step 5 — Annotator phase
+
+Dispatch `ipso-annotator` with: `news_id` (the `session_id` from Step 1.6), `full_text`
+(the normalized news text from Step 1), `url`/`source`/`date` from Step 1 if present, the
+Detective Report from Step 2, and the session folder path from Step 1.6. Wait for it to
+return the Master Dataset JSON row(s) for this news item (see
+`.claude/agents/ipso-annotator.md` for the exact schema and shape).
+
+If this dispatch fails outright, do not fail the whole investigation — proceed to Step 6
+anyway; the verdict and detective report are still valid without the dataset JSON.
+
+## Step 6 — Respond to the user
 
 Return, in this order, and nothing else besides these two sections:
 
@@ -98,8 +113,9 @@ Return, in this order, and nothing else besides these two sections:
 <the full detective report from Step 2, verbatim>
 ```
 
-Do not additionally print the raw Attorney/Prosecutor reports as top-level output — they
-are working evidence for the judge, not a separate user-facing deliverable. Do not mention
-`ipso-detective-head`, `ipso-reader`, `ipso-analyst`, `ipso-source`, `ipso-attorney`,
-`ipso-prosecutor`, `ipso-judge`, or this skill's own name anywhere in the response text you
-add around those two sections.
+Do not additionally print the raw Attorney/Prosecutor reports or the dataset JSON as
+top-level output — they are working evidence and a machine-readable artifact, not a
+separate user-facing deliverable. Do not mention `ipso-detective-head`, `ipso-reader`,
+`ipso-analyst`, `ipso-source`, `ipso-attorney`, `ipso-prosecutor`, `ipso-judge`,
+`ipso-annotator`, or this skill's own name anywhere in the response text you add around
+those two sections.

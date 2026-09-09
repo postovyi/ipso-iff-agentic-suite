@@ -31,12 +31,12 @@ using only facts the specialists actually returned.
    other specialists' output.
 2. Dispatch `ipso-analyst` with the news text (+ url/date if present), the session
    folder path, and the config dict. Task: "fact-check the claims in this news item using
-   the Apify MCP tool available to you, searching only the platforms present in the given
-   config; find corroborating or contradicting reporting."
+   whichever MCP tools are already available to you, searching only the platforms present
+   in the given config; find corroborating or contradicting reporting."
 3. Dispatch `ipso-source` with the news text (+ url if present), the session folder
    path, and the config dict. Task: "identify the outlets/channels distributing this news
-   using the Apify MCP tool available to you, searching only the platforms present in the
-   given config."
+   using whichever MCP tools are already available to you, searching only the platforms
+   present in the given config."
 4. Review what came back. If one specialist's findings leave an open question squarely
    inside that specialist's own domain (not a new domain), you MAY dispatch that same
    specialist once more with a narrower follow-up task. Do not loop indefinitely — at most
