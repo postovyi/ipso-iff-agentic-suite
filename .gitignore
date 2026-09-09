@@ -164,7 +164,6 @@ env.bak/
 venv.bak/
 
 # Telegram scraper output/session
-scripts/telegram_scraper/output/
 scripts/telegram_scraper/*.session
 scripts/telegram_scraper/*.session-journal
 
