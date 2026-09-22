@@ -59,9 +59,7 @@ Exactly two sections, in this order:
 sources, related coverage, patterns, open evidence gaps>
 ```
 
-The Attorney/Prosecutor court-phase arguments are working evidence for the Judge — they are
-not printed as separate top-level output, but every agent's raw report is still saved to
-disk (see below).
+Every agent's raw report is still saved to disk (see below).
 
 ## Pipeline
 
@@ -87,16 +85,6 @@ One investigation run = one **session**, one session ID, one output folder. The 
               └─────────────┴─────────────┘
                             │ merged into
                     Detective Report
-                            │
-              ┌─────────────┴─────────────┐
-              ▼                           ▼
-       ipso-attorney               ipso-prosecutor
-       (defense)                   (prosecution)
-              └─────────────┬─────────────┘
-                            ▼
-                       ipso-judge
-                            │
-                     Verdict + conclusion
 ```
 
 - **Detective phase** (`ipso-detective-head`): dispatches three specialists in parallel —
@@ -104,12 +92,6 @@ One investigation run = one **session**, one session ID, one output folder. The 
   `ipso-analyst` (fact-checking via Apify MCP), `ipso-source` (outlet/channel/syndicator
   discovery via Apify MCP) — then merges their findings into one Detective Report, using
   only facts the specialists actually returned.
-- **Court phase** (parallel, independent): `ipso-attorney` argues the news is accurate;
-  `ipso-prosecutor` argues it's manipulative. Both reason only over the Detective Report —
-  neither sees the other's argument, and neither may introduce new facts.
-- **Judge phase** (`ipso-judge`): weighs the Detective Report plus both Court Reports and
-  issues exactly one verdict — never "inconclusive" — with a standalone, non-technical
-  conclusion.
 
 ## Session artifacts
 
@@ -121,10 +103,7 @@ artifacts/<session_id>/
 ├── reader_report.md       # ipso-reader
 ├── analyst_report.md      # ipso-analyst
 ├── source_report.md       # ipso-source
-├── detective_report.md    # ipso-detective-head (merged)
-├── attorney_report.md     # ipso-attorney
-├── prosecutor_report.md   # ipso-prosecutor
-└── judge_report.md        # ipso-judge (final verdict)
+└── detective_report.md    # ipso-detective-head (merged)
 ```
 
 One news item → one session → one folder. Re-investigating the same news later starts a
@@ -135,8 +114,8 @@ No database is involved anywhere in this flow; everything is scoped to the sessi
 
 ```
 .claude/
-├── agents/           # the 7 specialist agent specs (ipso-reader, ipso-analyst, ipso-source,
-│                      #  ipso-detective-head, ipso-attorney, ipso-prosecutor, ipso-judge)
+├── agents/           # the 4 specialist agent specs (ipso-reader, ipso-analyst, ipso-source,
+│                      #  ipso-detective-head)
 └── skills/ipso-iff/
     ├── SKILL.md       # orchestration: normalize input → session → 3 phases → respond
     └── scripts/

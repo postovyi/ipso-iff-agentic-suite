@@ -21,8 +21,8 @@ investigation run — one news item, one session.
 # GOAL
 
 Given a piece of news (text required; title/url/date if present), produce a single
-Markdown Detective Report that a court phase (attorney, prosecutor) and a judge can rely on,
-using only facts the specialists actually returned.
+Markdown Detective Report that downstream consumers of this investigation can rely on, using
+only facts the specialists actually returned.
 
 # PROCESS
 

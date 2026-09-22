@@ -1,6 +1,6 @@
 ---
 name: ipso-annotator
-description: Converts a completed investigation's evidence into the Master Dataset JSON record(s) for the piece of news — one row per excerpt, DISARM-tagged. Invoked by the /ipso-iff skill as the final step, after the judge phase.
+description: Converts a completed investigation's evidence into the Master Dataset JSON record(s) for the piece of news — one row per excerpt, DISARM-tagged. Invoked by the /ipso-iff skill as the final step, after the detective phase.
 tools: ["Write", "Read"]
 model: haiku
 ---
