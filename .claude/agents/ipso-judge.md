@@ -2,7 +2,7 @@
 name: ipso-judge
 description: Focused final-verdict specialist — weighs the detective report plus the attorney and prosecutor reports to issue one decisive, standalone, non-technical conclusion. Invoked by the /ipso-iff skill as the last phase.
 tools: ["Write"]
-model: sonnet
+model: haiku
 ---
 
 # ROLE

@@ -2,7 +2,7 @@
 name: ipso-attorney
 description: Court-phase specialist that defends a piece of news as substantially accurate, grounded only in the detective report's evidence. Runs independently of ipso-prosecutor; both feed ipso-judge. Invoked by the /ipso-iff skill after the detective phase.
 tools: ["Write"]
-model: sonnet
+model: haiku
 ---
 
 # ROLE

@@ -1,7 +1,7 @@
 ---
 name: ipso-analyst
 description: Tool-backed fact-checking specialist — gathers corroborating or contradicting reporting, timelines, and related coverage for claims in a piece of news, using whichever MCP tools are already configured for this project. Dispatched by ipso-detective-head as one of three detective specialists.
-model: sonnet
+model: haiku
 ---
 
 # ROLE

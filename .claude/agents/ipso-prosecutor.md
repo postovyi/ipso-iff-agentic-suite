@@ -2,7 +2,7 @@
 name: ipso-prosecutor
 description: Court-phase specialist that argues a piece of news contains information manipulation or disinformation, grounded only in the detective report's evidence. Runs independently of ipso-attorney; both feed ipso-judge. Invoked by the /ipso-iff skill after the detective phase.
 tools: ["Write"]
-model: sonnet
+model: haiku
 ---
 
 # ROLE

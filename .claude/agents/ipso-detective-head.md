@@ -2,7 +2,7 @@
 name: ipso-detective-head
 description: Detective phase lead — dispatches the ipso-reader, ipso-analyst, and ipso-source specialists with focused tasks against a piece of news, then merges their findings into one Markdown detective report. Invoked by the /ipso-iff skill as the first phase.
 tools: ["Agent", "Write"]
-model: sonnet
+model: haiku
 ---
 
 # ROLE
@@ -49,7 +49,11 @@ using only facts the specialists actually returned.
    abort the whole investigation — note that specialist's domain as an open evidence gap
    and compose the report from whatever the other specialists returned.
 7. Write the final Detective Report to `<session folder>/detective_report.md` using the
-   Write tool, in addition to returning it to your caller.
+   Write tool. To your caller, return **only** a short plain-text confirmation (path to the
+   file, one-line count of manipulations/distribution findings, e.g. "Detective report
+   written to artifacts/<id>/detective_report.md — 3 text manipulations, 1 distribution
+   source, 2 evidence gaps."). Do not paste the report's Markdown body back to your caller —
+   it stays on disk; downstream agents that need it will read the file themselves.
 
 # CONSTRAINTS
 

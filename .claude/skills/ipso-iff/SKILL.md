@@ -1,6 +1,6 @@
 ---
 name: ipso-iff
-description: Investigate a piece of news for information manipulation. Runs a pipeline — detective (evidence gathering) → annotator (Master Dataset JSON) — and returns a Detective Report with DISARM-tagged findings. Use when the user asks to investigate, fact-check, or check a news item/article/post for manipulation or disinformation.
+description: Investigate a piece of news for information manipulation. Runs a pipeline — detective (evidence gathering) → annotator (Master Dataset JSON) — writing all output to disk and returning only the dataset.json path, to keep the caller's context small. Use when the user asks to investigate, fact-check, or check a news item/article/post for manipulation or disinformation.
 argument-hint: "News text and/or URL to investigate (date optional)"
 user-invocable: true
 ---
@@ -63,8 +63,12 @@ filename) in addition to returning the report inline to its caller.
 
 Dispatch the `ipso-detective-head` sub-agent with the normalized Piece of News (text
 required; title/url/date passed through if present), **the enabled actor configs** from
-Step 1.5, and **the session folder path** from Step 1.6. Wait for it to return the Detective
-Report (Markdown, see `.claude/agents/ipso-detective-head.md` for its exact shape).
+Step 1.5, and **the session folder path** from Step 1.6. This agent writes the full
+Detective Report to `<session folder>/detective_report.md` itself and returns you only a
+short one-line confirmation — do **not** ask for or accept the full Markdown body inline;
+if it comes back anyway, discard it from your working context and keep only the
+confirmation line. You never need to hold the report's content yourself — Step 3's agent
+reads the file directly.
 
 If this dispatch fails outright, stop and tell the user the investigation could not
 proceed past the evidence-gathering phase — do not fabricate a Detective Report yourself.
@@ -72,26 +76,27 @@ proceed past the evidence-gathering phase — do not fabricate a Detective Repor
 ## Step 3 — Annotator phase
 
 Dispatch `ipso-annotator` with: `news_id` (the `session_id` from Step 1.6), `full_text`
-(the normalized news text from Step 1), `url`/`source`/`date` from Step 1 if present, the
-Detective Report from Step 2, and the session folder path from Step 1.6. Wait for it to
-return the Master Dataset JSON row(s) for this news item (see
-`.claude/agents/ipso-annotator.md` for the exact schema and shape).
+(the normalized news text from Step 1), `url`/`source`/`date` from Step 1 if present, and
+the session folder path from Step 1.6. Do **not** paste the Detective Report's content into
+this dispatch — the annotator reads `<session folder>/detective_report.md` itself. Wait for
+it to confirm the Master Dataset JSON row(s) were written to
+`<session folder>/dataset.json` (see `.claude/agents/ipso-annotator.md` for the schema).
 
 If this dispatch fails outright, do not fail the whole investigation — proceed to Step 4
-anyway; the detective report is still valid without the dataset JSON.
+anyway; note that `dataset.json` was not produced.
 
 ## Step 4 — Respond to the user
 
-Return, in this order, and nothing else besides this section:
+Return **only** this, nothing else:
 
 ```markdown
-## Detective Report
-
-<the full detective report from Step 2, verbatim>
+Dataset written to `artifacts/<session_id>/dataset.json`.
 ```
 
-Do not additionally print the raw dataset JSON as top-level output — it is a
-machine-readable artifact, not a separate user-facing deliverable (point the user to
-`artifacts/<session_id>/dataset.json` if they need it directly). Do not mention
-`ipso-detective-head`, `ipso-reader`, `ipso-analyst`, `ipso-source`, `ipso-annotator`, or
-this skill's own name anywhere in the response text you add around that section.
+(Or, if Step 3 failed: say plainly that the detective phase completed but the dataset JSON
+could not be produced, and give the detective report's path instead.)
+
+Do not print the Detective Report's Markdown body, the dataset JSON's contents, or any
+per-excerpt findings as top-level output — this skill's only deliverable is the file path.
+Do not mention `ipso-detective-head`, `ipso-reader`, `ipso-analyst`, `ipso-source`,
+`ipso-annotator`, or this skill's own name anywhere in the response text.

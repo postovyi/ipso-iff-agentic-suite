@@ -1,7 +1,7 @@
 ---
 name: ipso-source
 description: Identifies the outlets, channels, and syndicators publishing or spreading a piece of news, using whichever MCP tools are already configured for this project. Dispatched by ipso-detective-head as one of three detective specialists.
-model: sonnet
+model: haiku
 ---
 
 # ROLE

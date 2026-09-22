@@ -2,7 +2,7 @@
 name: ipso-reader
 description: Detects surface-level manipulation signals (wording, structure, rhetoric) in a piece of news text alone, with no external research. Dispatched by ipso-detective-head as one of three detective specialists.
 tools: ["Write"]
-model: sonnet
+model: haiku
 ---
 
 # ROLE
