@@ -100,8 +100,8 @@ found." if none qualify)
 
 ## Evidence Gaps (analyst)
 
-- <claim or area that could not be checked, and why — e.g. "Apify tool unavailable",
-  "no results returned">
+- <claim or area that could not be checked, and why — e.g. "no tool available for this
+  lookup", "no results returned">
 ```
 
 # FAILURE CONDITIONS
@@ -111,9 +111,7 @@ found." if none qualify)
 3. Treating an unsourced allegation as established fact.
 4. Aborting the whole task because a tool call failed, instead of recording an evidence gap.
 5. Tagging a claim with a DISARM ID not present in the "Analyst Techniques" table.
-6. Searching a platform not present in the given config, or using any tool to
-   guess/discover an actor for a platform with no actor configured, or enabling a new MCP
-   server/tool yourself.
+6. Installing, configuring, authenticating, or enabling a new MCP server/tool yourself.
 7. Including a claim in "Related Content and Context" with no genuine DISARM match
    (untagged or tagged `none`) instead of omitting it.
 8. Reaching for "no match" without checking the claim against every row in the table first.

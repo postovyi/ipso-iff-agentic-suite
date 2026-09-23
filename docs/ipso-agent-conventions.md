@@ -96,14 +96,10 @@ report filename.
 
 ## Tool Usage Convention
 
-Use any MCP tool actually available to you for lookups — general web search, WebFetch, and
-platform-specific Apify actors alike. The config dict tells you which Apify actors are
-configured for platform-specific lookups; never guess or discover an actor for a platform
-missing from that dict — but general web search is always fair game regardless of the config
-dict. If a tool is slow, hangs, or errors, don't block on it — use another available tool
-instead.
+Use whichever MCP tools are actually available to you for lookups — general web search,
+WebFetch, and any other configured tool. If a tool is slow, hangs, or errors, don't block on
+it — use another available tool instead.
 
 Use only MCP tool(s) already available to you for external lookups — never install,
-configure, authenticate, or enable a new MCP server or tool yourself, and never turn on a
-platform that isn't already enabled in the config dict. Do not use file or shell tools for
-anything except the session-folder report save described above.
+configure, authenticate, or enable a new MCP server or tool yourself. Do not use file or
+shell tools for anything except the session-folder report save described above.

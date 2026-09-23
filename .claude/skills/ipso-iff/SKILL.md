@@ -37,14 +37,7 @@ From `$ARGUMENTS`, extract:
 - `source` — the channel/outlet name, if provided or self-evident (e.g. from the URL's
   domain), otherwise omit. Its absence never blocks the investigation.
 
-## Step 1.5 — Load actor configs
-
-Before dispatching to the detective phase, run `.claude/skills/ipso-iff/scripts/load_actors.py`
-to load enabled actor configurations from `.env`. This produces a JSON object containing only
-the enabled media sources (web_search, twitter, reddit, instagram, threads, telegram).
-Pass this config dict to the detective agents when they start working.
-
-## Step 1.6 — Generate session ID and session folder
+## Step 1.5 — Generate session ID and session folder
 
 Run `.claude/skills/ipso-iff/scripts/generate_session_id.py` to generate a fresh `session_id`
 (one UUID per news investigated — one news, one session, never reused across runs, even for
@@ -62,9 +55,9 @@ filename) in addition to returning the report inline to its caller.
 ## Step 2 — Detective phase
 
 Dispatch the `ipso-detective-head` sub-agent with the normalized Piece of News (text
-required; title/url/date passed through if present), **the enabled actor configs** from
-Step 1.5, and **the session folder path** from Step 1.6. This agent writes the full
-Detective Report to `<session folder>/detective_report.md` itself and returns you only a
+required; title/url/date passed through if present) and **the session folder path** from
+Step 1.5. This agent writes the full Detective Report to `<session folder>/detective_report.md`
+itself and returns you only a
 short one-line confirmation — do **not** ask for or accept the full Markdown body inline;
 if it comes back anyway, discard it from your working context and keep only the
 confirmation line. You never need to hold the report's content yourself — Step 3's agent
@@ -75,9 +68,9 @@ proceed past the evidence-gathering phase — do not fabricate a Detective Repor
 
 ## Step 3 — Annotator phase
 
-Dispatch `ipso-annotator` with: `news_id` (the `session_id` from Step 1.6), `full_text`
+Dispatch `ipso-annotator` with: `news_id` (the `session_id` from Step 1.5), `full_text`
 (the normalized news text from Step 1), `url`/`source`/`date` from Step 1 if present, and
-the session folder path from Step 1.6. Do **not** paste the Detective Report's content into
+the session folder path from Step 1.5. Do **not** paste the Detective Report's content into
 this dispatch — the annotator reads `<session folder>/detective_report.md` itself. Wait for
 it to confirm the Master Dataset JSON row(s) were written to
 `<session folder>/dataset.json` (see `.claude/agents/ipso-annotator.md` for the schema).

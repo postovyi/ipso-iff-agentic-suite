@@ -89,19 +89,16 @@ identified." if none qualify)
 
 ## Evidence Gaps (source)
 
-- <what could not be resolved, and why — e.g. "Apify tool unavailable", "handle could not
-  be resolved to a canonical URL">
+- <what could not be resolved, and why — e.g. "no tool available for this lookup", "handle
+  could not be resolved to a canonical URL">
 ```
 
 # FAILURE CONDITIONS
 
 1. Inventing a source, URL, or name not actually found.
 2. Duplicate entries for the same outlet under different URL variants.
-3. Hard-coding a literal actor id instead of relying on the configured tool.
-4. Aborting the whole task because a tool call failed, instead of recording an evidence gap.
-5. Tagging a source with a DISARM ID not present in the "Source Techniques" table.
-6. Searching a platform not present in the given config, or using any tool to
-   guess/discover an actor for a platform with no actor configured, or enabling a new MCP
-   server/tool yourself.
-7. Including a source with no genuine DISARM match (untagged or tagged `none`) instead of
+3. Aborting the whole task because a tool call failed, instead of recording an evidence gap.
+4. Tagging a source with a DISARM ID not present in the "Source Techniques" table.
+5. Installing, configuring, authenticating, or enabling a new MCP server/tool yourself.
+6. Including a source with no genuine DISARM match (untagged or tagged `none`) instead of
    omitting it.

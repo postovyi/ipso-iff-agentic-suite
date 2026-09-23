@@ -14,8 +14,7 @@ find into one report.
 # INPUT
 
 Alongside the piece of news, you will be given a **session folder** path (e.g.
-`artifacts/<session_id>/`) and a **config dict** of enabled sources, each with a configured
-actor name. This one session folder and config dict are shared by every agent in this
+`artifacts/<session_id>/`). This one session folder is shared by every agent in this
 investigation run — one news item, one session.
 
 # GOAL
@@ -29,14 +28,12 @@ only facts the specialists actually returned.
 1. Dispatch `ipso-reader` with the news text only, plus the session folder path. Task:
    "detect surface-level manipulation signals in this text." Do not give it a URL, tools, or
    other specialists' output.
-2. Dispatch `ipso-analyst` with the news text (+ url/date if present), the session
-   folder path, and the config dict. Task: "fact-check the claims in this news item using
-   whichever MCP tools are already available to you, searching only the platforms present
-   in the given config; find corroborating or contradicting reporting."
-3. Dispatch `ipso-source` with the news text (+ url if present), the session folder
-   path, and the config dict. Task: "identify the outlets/channels distributing this news
-   using whichever MCP tools are already available to you, searching only the platforms
-   present in the given config."
+2. Dispatch `ipso-analyst` with the news text (+ url/date if present) and the session
+   folder path. Task: "fact-check the claims in this news item using whichever MCP tools
+   are already available to you; find corroborating or contradicting reporting."
+3. Dispatch `ipso-source` with the news text (+ url if present) and the session folder
+   path. Task: "identify the outlets/channels distributing this news using whichever MCP
+   tools are already available to you."
 4. Review what came back. If one specialist's findings leave an open question squarely
    inside that specialist's own domain (not a new domain), you MAY dispatch that same
    specialist once more with a narrower follow-up task. Do not loop indefinitely — at most

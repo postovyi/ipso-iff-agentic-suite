@@ -7,25 +7,14 @@ specialist sub-agents gathers evidence, argues both sides, and returns one decis
 ## Requirements
 
 - Claude Code CLI
-- Python 3 with `python-dotenv` installed (used by the skill's helper scripts)
-- An [Apify](https://apify.com) API token, if you want tool-backed fact-checking and source
-  lookup (Analyst/Source specialists) instead of text-only analysis
+- Any MCP tools you want the Analyst/Source specialists to use for tool-backed
+  fact-checking and source lookup (e.g. web search, WebFetch) — configured in `.mcp.json`.
+  Without them, those specialists fall back to text-only analysis.
 
 ## Setup
 
-1. Copy the env template and fill in your Apify token plus whichever actors you use:
-
-   ```bash
-   cp .env.example .env
-   ```
-
-2. In `.env`, set `APIFY_API_KEY` and, per media source, its `*_ACTOR` id, `*_MAX_RESULTS`,
-   and `*_ENABLED` flag (`web_search`, `twitter`, `reddit`, `instagram`, `threads`,
-   `telegram`). Only sources with `*_ENABLED=true` and a resolvable actor are passed to the
-   Analyst/Source specialists — disable anything you don't have an actor for.
-
-3. `.mcp.json` already registers the Apify MCP server (`@apify/actors-mcp-server`), reading
-   `APIFY_TOKEN` from `APIFY_API_KEY` in `.env`. No changes needed unless you swap providers.
+`.mcp.json` registers the MCP servers available to the agents (e.g. `searxng` for web
+search). Add or swap servers there as needed — no other setup is required.
 
 ## Usage
 
@@ -66,10 +55,9 @@ Every agent's raw report is still saved to disk (see below).
 One investigation run = one **session**, one session ID, one output folder. The skill:
 
 1. Normalizes your input (text/title/url/date).
-2. Loads enabled actor configs from `.env`.
-3. Generates a fresh session ID (`.claude/skills/ipso-iff/scripts/generate_session_id.py`,
+2. Generates a fresh session ID (`.claude/skills/ipso-iff/scripts/generate_session_id.py`,
    a UUID4) and creates `artifacts/<session_id>/` — the session folder for this run only.
-4. Runs three phases, passing the session folder to every agent so each one saves its own
+3. Runs three phases, passing the session folder to every agent so each one saves its own
    report there in addition to returning it to its caller:
 
 ```
@@ -81,7 +69,7 @@ One investigation run = one **session**, one session ID, one output folder. The 
               ┌─────────────┼─────────────┐
               ▼             ▼             ▼
         ipso-reader   ipso-analyst   ipso-source
-        (text only)   (Apify tools)  (Apify tools)
+        (text only)  (MCP tools)    (MCP tools)
               └─────────────┴─────────────┘
                             │ merged into
                     Detective Report
@@ -89,9 +77,10 @@ One investigation run = one **session**, one session ID, one output folder. The 
 
 - **Detective phase** (`ipso-detective-head`): dispatches three specialists in parallel —
   `ipso-reader` (surface-level rhetoric/wording signals, text only, no tools),
-  `ipso-analyst` (fact-checking via Apify MCP), `ipso-source` (outlet/channel/syndicator
-  discovery via Apify MCP) — then merges their findings into one Detective Report, using
-  only facts the specialists actually returned.
+  `ipso-analyst` (fact-checking via whichever MCP tools are available), `ipso-source`
+  (outlet/channel/syndicator discovery via whichever MCP tools are available) — then merges
+  their findings into one Detective Report, using only facts the specialists actually
+  returned.
 
 ## Session artifacts
 
@@ -119,9 +108,7 @@ No database is involved anywhere in this flow; everything is scoped to the sessi
 └── skills/ipso-iff/
     ├── SKILL.md       # orchestration: normalize input → session → 3 phases → respond
     └── scripts/
-        ├── generate_session_id.py   # emits one UUID4 per run
-        └── load_actors.py           # reads .env, returns enabled actor configs as JSON
+        └── generate_session_id.py   # emits one UUID4 per run
 artifacts/             # session output folders, one per investigation (gitignored)
-.env / .env.example     # Apify token + per-source actor config
-.mcp.json               # Apify MCP server registration
+.mcp.json               # MCP server registration (web search, etc.)
 ```

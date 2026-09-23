@@ -1,16 +1,10 @@
 {
   "mcpServers": {
-    "apify": {
-      "type": "stdio",
+    "searxng": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@apify/actors-mcp-server",
-        "--tools",
-        "fetch-actor-details,call-actor,docs"
-      ],
+      "args": ["-y", "mcp-searxng"],
       "env": {
-        "APIFY_TOKEN": "${APIFY_TOKEN}"
+        "SEARXNG_URL": "http://localhost:8080"
       }
     }
   }
